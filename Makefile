@@ -192,8 +192,8 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-ARCH		?= $(SUBARCH)
-CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
+ARCH		?= arm
+CROSS_COMPILE	?= /home/arter97/linaro-lto/bin/arm-linux-androideabi-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -382,7 +382,16 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-		   -fno-delete-null-pointer-checks
+		   -fno-delete-null-pointer-checks \
+		   -std=gnu89
+
+# arter97's optimizations
+KBUILD_CFLAGS   += -s -pipe -fno-pic -O2 -mcpu=cortex-a15 -mtune=cortex-a15 -mfloat-abi=softfp -mfpu=vfpv4
+# -Wno-unused
+KBUILD_CFLAGS   += -Wno-unused
+# L1/L2 cache size parameters by @JustArchi
+KBUILD_CFLAGS   += --param l1-cache-size=16 --param l1-cache-line-size=16 --param l2-cache-size=2048
+
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
